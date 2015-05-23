@@ -27,8 +27,8 @@ Y_test<-rename(Y_test, Label=V1, Activity=V2)
 Y_train<-rename(Y_train, Label=V1, Activity=V2)
 names(X_test)<-varnames
 names(X_train)<-varnames
-subj_test<-rename(subj_test,id=V1)
-subj_train<-rename(subj_train,id=V1)
+subj_test<-rename(subj_test,Subject=V1)
+subj_train<-rename(subj_train,Subject=V1)
 
 #Merging all of the test and train sets to make a single large dataset
 test<-cbind(subj_test,X_test,Y_test)
@@ -38,8 +38,8 @@ final<-rbind(test,train)
 #Cutting down to id and mean and standard deviation vars
 #mvars=c(2:6,42:47,82:87,122:127,162:167,202,203,215,216,228,229,241,242,267:272,346:351,425:430)
 output<-final%>%
-    select(id,contains("mean."),contains("std."),Activity,-contains("angle"))%>%
-    group_by(Activity,id)%>%
+    select(Subject,Activity,contains("mean."),contains("std."),-contains("angle"))%>%
+    group_by(Activity,Subject)%>%
     summarise_each(funs(mean))
 
 write.table(output,file="./tidy.txt",row.names=FALSE)
