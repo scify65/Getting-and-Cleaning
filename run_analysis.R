@@ -4,7 +4,7 @@ require("dplyr")
 if (!file.exists("./UCI HAR Dataset")){
     fileURL<-"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"   
     download.file(fileURL,destfile="./GCDData.zip")
-    unzip("./GCDData.zip", exdir="./data")
+    unzip("./GCDData.zip", exdir=".")
 }
 
 #Reading the tables into R
@@ -17,6 +17,9 @@ subj_train<-read.table("./UCI HAR Dataset/train/subject_train.txt")
 X_train<-read.table("./UCI HAR Dataset/train/X_train.txt")
 Y_train<-read.table("./UCI HAR Dataset/train/y_train.txt")
 labels<-read.table("./UCI HAR Dataset/activity_labels.txt")
+
+#Fixing the BodyBody typo in the variable names
+varnames<-sub("BodyBody","Body",varnames)
 
 #Matching up the activity labels with the Y data sets
 Y_test<-merge(Y_test,labels,by="V1")
@@ -36,7 +39,6 @@ train<-cbind(subj_train,X_train,Y_train)
 final<-rbind(test,train)
 
 #Cutting down to id and mean and standard deviation vars
-#mvars=c(2:6,42:47,82:87,122:127,162:167,202,203,215,216,228,229,241,242,267:272,346:351,425:430)
 output<-final%>%
     select(Subject,Activity,contains("mean."),contains("std."),-contains("angle"))%>%
     group_by(Activity,Subject)%>%
