@@ -1,26 +1,22 @@
-library(dplyr)
+require("dplyr")
 
 #Downloading and extracting the files
-if(!file.exists("./data")) {
-    dir.create("./data")
+if (!file.exists("./UCI HAR Dataset")){
+    fileURL<-"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"   
+    download.file(fileURL,destfile="./GCDData.zip")
+    unzip("./GCDData.zip", exdir="./data")
 }
-    
-fileURL<-"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-
-download.file(fileURL,destfile="./data/GCDData.zip")
-
-unzip("./data/GCDData.zip", exdir="./data")
 
 #Reading the tables into R
-features<-read.table("./data/UCI HAR Dataset/features.txt")
+features<-read.table("./UCI HAR Dataset/features.txt")
 varnames<-make.names(features[,2],unique=TRUE)
-subj_test<-read.table("./data/UCI HAR Dataset/test/subject_test.txt")
-X_test<-read.table("./data/UCI HAR Dataset/test/X_test.txt")
-Y_test<-read.table("./data/UCI HAR Dataset/test/Y_test.txt")
-subj_train<-read.table("./data/UCI HAR Dataset/train/subject_train.txt")
-X_train<-read.table("./data/UCI HAR Dataset/train/X_train.txt")
-Y_train<-read.table("./data/UCI HAR Dataset/train/y_train.txt")
-labels<-read.table("./data/UCI HAR Dataset/activity_labels.txt")
+subj_test<-read.table("./UCI HAR Dataset/test/subject_test.txt")
+X_test<-read.table("./UCI HAR Dataset/test/X_test.txt")
+Y_test<-read.table("./UCI HAR Dataset/test/Y_test.txt")
+subj_train<-read.table("./UCI HAR Dataset/train/subject_train.txt")
+X_train<-read.table("./UCI HAR Dataset/train/X_train.txt")
+Y_train<-read.table("./UCI HAR Dataset/train/y_train.txt")
+labels<-read.table("./UCI HAR Dataset/activity_labels.txt")
 
 #Matching up the activity labels with the Y data sets
 Y_test<-merge(Y_test,labels,by="V1")
@@ -46,4 +42,4 @@ output<-final%>%
     group_by(Activity,id)%>%
     summarise_each(funs(mean))
 
-write.table(output,file="./data/tidy.txt",row.names=FALSE)
+write.table(output,file="./tidy.txt",row.names=FALSE)
