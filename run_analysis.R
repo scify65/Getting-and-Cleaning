@@ -16,18 +16,13 @@ Y_test<-read.table("./UCI HAR Dataset/test/Y_test.txt")
 subj_train<-read.table("./UCI HAR Dataset/train/subject_train.txt")
 X_train<-read.table("./UCI HAR Dataset/train/X_train.txt")
 Y_train<-read.table("./UCI HAR Dataset/train/y_train.txt")
-labels<-read.table("./UCI HAR Dataset/activity_labels.txt")
 
 #Fixing the BodyBody typo in the variable names
 varnames<-sub("BodyBody","Body",varnames)
 
-#Matching up the activity labels with the Y data sets
-Y_test<-merge(Y_test,labels,by="V1")
-Y_train<-merge(Y_train,labels,by="V1")
-
 #Renaming variables
-Y_test<-rename(Y_test, Label=V1, Activity=V2)
-Y_train<-rename(Y_train, Label=V1, Activity=V2)
+Y_test<-rename(Y_test, Label=V1)
+Y_train<-rename(Y_train, Label=V1)
 names(X_test)<-varnames
 names(X_train)<-varnames
 subj_test<-rename(subj_test,Subject=V1)
@@ -37,6 +32,10 @@ subj_train<-rename(subj_train,Subject=V1)
 test<-cbind(subj_test,X_test,Y_test)
 train<-cbind(subj_train,X_train,Y_train)
 final<-rbind(test,train)
+
+#Applying the descriptive names to the activities
+activities<-c("Walking","Walking Upstairs","Walking Downstairs","Sitting","Standing","Laying")
+final$Activity<-cut(final$Label,breaks=0:6,labels=activities)
 
 #Cutting down to id and mean and standard deviation vars
 output<-final%>%

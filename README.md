@@ -9,3 +9,9 @@ This code assumes that the required data is present in your working directory. I
 Use the following command to read the output file back in to R:
 
 ```output<-read.table("./tidy.txt", header=TRUE)```
+
+###Files in this repo
+* Codebook.md
+* README.md
+* run_analysis.R
+* tidy.txt
